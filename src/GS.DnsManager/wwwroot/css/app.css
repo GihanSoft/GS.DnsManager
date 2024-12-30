@@ -1,9 +1,37 @@
-html, body {
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+:root {
+  color-scheme: dark;
+  font-family: Vazirmatn, Helvetica, Arial, sans-serif;
+}
+
+* {
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+html {
+  height: 100%;
 }
 
 body {
-  padding: 20px;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body, #root, .d-flex {
+  display: flex
+}
+
+body, #root, .flex-column {
+  -ms-flex-direction: column;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+}
+
+#root {
+  flex: auto;
 }
 
 .valid.modified:not([type=checkbox]) {

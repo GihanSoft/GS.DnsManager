@@ -1,0 +1,11 @@
+#page-container {
+  -ms-flex: auto;
+  -webkit-flex: auto;
+  flex: auto;
+}
+
+::deep {
+  width: 100%;
+  max-width: 600px;
+  align-self: center;
+}

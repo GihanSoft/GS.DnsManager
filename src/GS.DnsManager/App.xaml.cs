@@ -5,6 +5,8 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
+using MudBlazor.Services;
+
 namespace GS.DnsManager;
 /// <summary>
 /// Interaction logic for App.xaml
@@ -22,10 +24,19 @@ internal sealed partial class App : Application
         base.OnStartup(e);
 
         var builder = Host.CreateApplicationBuilder(e.Args);
+
+        builder.Services.AddWpfBlazorWebView();
+#if DEBUG
+        builder.Services.AddBlazorWebViewDeveloperTools();
+        builder.Logging.AddDebug();
+#endif
         ConfigureServices(builder);
+
         var app = builder.Build();
+
         _host = app;
         Resources.Add("services", ServiceProvider);
+
         app.StartAsync().GetAwaiter().GetResult();
     }
 
@@ -39,10 +50,6 @@ internal sealed partial class App : Application
 
     private static void ConfigureServices(HostApplicationBuilder builder)
     {
-        builder.Services.AddWpfBlazorWebView();
-#if DEBUG
-        builder.Services.AddBlazorWebViewDeveloperTools();
-        builder.Logging.AddDebug();
-#endif
+        builder.Services.AddMudServices();
     }
 }

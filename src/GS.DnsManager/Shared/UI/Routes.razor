@@ -3,4 +3,11 @@
         <RouteView RouteData="@routeData" DefaultLayout="@typeof(Layouts.MainLayout)" />
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />
     </Found>
+    <NotFound>
+        <GS.DnsManager.Shared.UI.Layouts.MainLayout>
+            <Body>
+                <MudText Typo="Typo.h2">404 Not Found </MudText>
+            </Body>
+        </GS.DnsManager.Shared.UI.Layouts.MainLayout>
+    </NotFound>
 </Router>

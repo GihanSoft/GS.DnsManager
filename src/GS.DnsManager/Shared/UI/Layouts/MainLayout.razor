@@ -1,11 +1,54 @@
 @inherits LayoutComponentBase
 
-<header>
-</header>
+@* Required *@
+<MudThemeProvider IsDarkMode Theme="_theme" />
+<MudPopoverProvider />
 
-<div id="page-container">
-    @Body
-</div>
+@* Needed for dialogs *@
+<MudDialogProvider />
 
-<footer>
-</footer>
+@* Needed for snackbars *@
+<MudSnackbarProvider />
+
+<MudLayout Class="flex-auto d-flex flex-column">
+    <MudAppBar Elevation="1">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+        <MudSpacer />
+        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+    </MudAppBar>
+    <MudDrawer @bind-Open="_drawerOpen" Elevation="2">
+        <MudDrawerHeader>
+            <MudText Typo="Typo.h5" Class="mt-1">Application</MudText>
+        </MudDrawerHeader>
+
+        <MudNavMenu>
+            <MudNavLink Href="/" Match="NavLinkMatch.All">Dashboard</MudNavLink>
+            <MudNavLink Href="/servers" Match="NavLinkMatch.Prefix">Servers</MudNavLink>
+            <MudNavGroup Title="Settings" Expanded="true">
+                <MudNavLink Href="/users" Match="NavLinkMatch.Prefix">Users</MudNavLink>
+                <MudNavLink Href="/security" Match="NavLinkMatch.Prefix">Security</MudNavLink>
+            </MudNavGroup>
+            <MudNavLink Href="/about" Match="NavLinkMatch.Prefix">About</MudNavLink>
+        </MudNavMenu>
+    </MudDrawer>
+    <MudMainContent Class="d-flex flex-column">
+        <MudContainer MaxWidth="MaxWidth.Medium" Class="py-3">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+@code {
+    bool _drawerOpen = true;
+    MudTheme _theme = new()
+        {
+            Typography = new()
+            {
+                Default = new()
+                {
+                    FontFamily = ["Vazirmatn"]
+                }
+            }
+        };
+
+    void DrawerToggle() => _drawerOpen = !_drawerOpen;
+}

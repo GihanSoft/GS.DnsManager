@@ -20,11 +20,11 @@ body {
   padding: 0;
 }
 
-body, #root, .d-flex {
+body, #root {
   display: flex
 }
 
-body, #root, .flex-column {
+body, #root {
   -ms-flex-direction: column;
   -webkit-flex-direction: column;
   flex-direction: column;

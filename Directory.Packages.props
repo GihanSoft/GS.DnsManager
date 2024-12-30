@@ -9,5 +9,6 @@
   <ItemGroup>
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebView.Wpf" Version="9.0.21" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.0" />
+    <PackageVersion Include="MudBlazor" Version="7.15.0" />
   </ItemGroup>
 </Project>

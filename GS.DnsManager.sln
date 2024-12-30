@@ -1,0 +1,40 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A17887D0-0939-4E61-8C91-961413B82A67}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{CC25A26F-91B9-4F8D-A9B4-E50008470FE6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "[root]", "[root]", "{178917E2-B113-49FB-BA5B-24EFBAC36945}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		Directory.Build.props = Directory.Build.props
+		Directory.Packages.props = Directory.Packages.props
+		LICENSE = LICENSE
+		nuget.config = nuget.config
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GS.DnsManager", "src\GS.DnsManager\GS.DnsManager.csproj", "{ACD75294-504B-4708-AB05-392878714767}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ACD75294-504B-4708-AB05-392878714767}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACD75294-504B-4708-AB05-392878714767}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACD75294-504B-4708-AB05-392878714767}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACD75294-504B-4708-AB05-392878714767}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{ACD75294-504B-4708-AB05-392878714767} = {A17887D0-0939-4E61-8C91-961413B82A67}
+	EndGlobalSection
+EndGlobal

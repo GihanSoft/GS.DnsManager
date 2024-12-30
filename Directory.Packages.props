@@ -1,0 +1,9 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
+    <DotnetVersion>9.0.0</DotnetVersion>
+  </PropertyGroup>
+  <ItemGroup>
+  </ItemGroup>
+</Project>

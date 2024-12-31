@@ -8,7 +8,8 @@
         xmlns:ui="clr-namespace:GS.DnsManager.Shared.UI"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
-        DataContext="{Binding RelativeSource={RelativeSource Self}, Path=ViewModel}">
+        DataContext="{Binding RelativeSource={RelativeSource Self}, Path=ViewModel}"
+        Icon="/Icon.ico">
     <Grid Background="Black">
         <blazor:BlazorWebView Services="{Binding ServiceProvider}"
                               HostPage="wwwroot/index.html">

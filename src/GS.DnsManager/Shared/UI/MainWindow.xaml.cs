@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace GS.DnsManager;
+namespace GS.DnsManager.Shared.UI;
 
 /// <summary>
 /// Interaction logic for MainWindow.xaml

@@ -3,8 +3,6 @@
 using GS.DnsManager.Features.Core;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 using MudBlazor.Services;
 
@@ -16,42 +14,41 @@ internal sealed partial class App : Application
 {
     public new static App Current => (App)Application.Current;
 
-    private IHost? _host;
-
-    public IServiceProvider ServiceProvider => _host!.Services;
+    private ServiceProvider? _serviceProvider;
+    public IServiceProvider ServiceProvider => _serviceProvider ?? new EmptyServiceProvider() as IServiceProvider;
 
     protected override void OnStartup(StartupEventArgs e)
     {
         base.OnStartup(e);
 
-        var builder = Host.CreateApplicationBuilder(e.Args);
-        ConfigureDefaultServices(builder);
-        ConfigureServices(builder);
-        _host = builder.Build();
-        _host.StartAsync().GetAwaiter().GetResult();
+        ServiceCollection services = new();
+        ConfigureDefaultServices(services);
+        ConfigureServices(services);
+        _serviceProvider = services.BuildServiceProvider();
     }
 
     protected override void OnExit(ExitEventArgs e)
     {
+        _serviceProvider?.Dispose();
         base.OnExit(e);
-
-        _host?.StopAsync().GetAwaiter().GetResult();
-        _host?.Dispose();
     }
 
-
-    private static void ConfigureDefaultServices(HostApplicationBuilder builder)
+    private static void ConfigureDefaultServices(IServiceCollection services)
     {
-        builder.Services.AddWpfBlazorWebView();
+        services.AddWpfBlazorWebView();
 #if DEBUG
-        builder.Services.AddBlazorWebViewDeveloperTools();
-        builder.Logging.AddDebug();
+        services.AddBlazorWebViewDeveloperTools();
 #endif
     }
 
-    private static void ConfigureServices(HostApplicationBuilder builder)
+    private static void ConfigureServices(IServiceCollection services)
     {
-        builder.Services.AddSingleton<IDnsService, DnsService>();
-        builder.Services.AddMudServices();
+        services.AddSingleton<IDnsService, DnsService>();
+        services.AddMudServices();
     }
+}
+
+internal sealed class EmptyServiceProvider : IServiceProvider
+{
+    public object? GetService(Type serviceType) => null;
 }

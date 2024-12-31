@@ -1,7 +1,8 @@
 ﻿using System.Windows;
 
+using GS.DnsManager.Features.Core;
+
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -13,7 +14,7 @@ namespace GS.DnsManager;
 /// </summary>
 internal sealed partial class App : Application
 {
-    public static new App Current => (App)Application.Current;
+    public new static App Current => (App)Application.Current;
 
     private IHost? _host;
 
@@ -24,20 +25,10 @@ internal sealed partial class App : Application
         base.OnStartup(e);
 
         var builder = Host.CreateApplicationBuilder(e.Args);
-
-        builder.Services.AddWpfBlazorWebView();
-#if DEBUG
-        builder.Services.AddBlazorWebViewDeveloperTools();
-        builder.Logging.AddDebug();
-#endif
+        ConfigureDefaultServices(builder);
         ConfigureServices(builder);
-
-        var app = builder.Build();
-
-        _host = app;
-        Resources.Add("services", ServiceProvider);
-
-        app.StartAsync().GetAwaiter().GetResult();
+        _host = builder.Build();
+        _host.StartAsync().GetAwaiter().GetResult();
     }
 
     protected override void OnExit(ExitEventArgs e)
@@ -48,8 +39,19 @@ internal sealed partial class App : Application
         _host?.Dispose();
     }
 
+
+    private static void ConfigureDefaultServices(HostApplicationBuilder builder)
+    {
+        builder.Services.AddWpfBlazorWebView();
+#if DEBUG
+        builder.Services.AddBlazorWebViewDeveloperTools();
+        builder.Logging.AddDebug();
+#endif
+    }
+
     private static void ConfigureServices(HostApplicationBuilder builder)
     {
+        builder.Services.AddSingleton<IDnsService, DnsService>();
         builder.Services.AddMudServices();
     }
 }

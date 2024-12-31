@@ -1,20 +1,20 @@
 @inherits LayoutComponentBase
 
 @* Required *@
-<MudThemeProvider IsDarkMode Theme="_theme" />
-<MudPopoverProvider />
+<MudThemeProvider IsDarkMode Theme="_theme"/>
+<MudPopoverProvider/>
 
 @* Needed for dialogs *@
-<MudDialogProvider />
+<MudDialogProvider/>
 
 @* Needed for snackbars *@
-<MudSnackbarProvider />
+<MudSnackbarProvider/>
 
 <MudLayout Class="flex-auto d-flex flex-column">
     <MudAppBar Elevation="1">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        <MudSpacer />
-        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="DrawerToggle"/>
+        <MudSpacer/>
+        <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End"/>
     </MudAppBar>
     <MudDrawer @bind-Open="_drawerOpen" Elevation="2">
         <MudDrawerHeader>
@@ -32,23 +32,25 @@
         </MudNavMenu>
     </MudDrawer>
     <MudMainContent Class="d-flex flex-column">
-        <MudContainer MaxWidth="MaxWidth.Medium" Class="py-3">
+        <MudContainer MaxWidth="MaxWidth.Medium" Class="flex-auto py-3 d-flex flex-column">
             @Body
         </MudContainer>
     </MudMainContent>
 </MudLayout>
+
 @code {
     bool _drawerOpen = true;
+
     MudTheme _theme = new()
+    {
+        Typography = new Typography()
         {
-            Typography = new()
+            Default = new Default()
             {
-                Default = new()
-                {
-                    FontFamily = ["Vazirmatn"]
-                }
+                FontFamily = ["Vazirmatn", "Roboto", "Tahoma", "Helvetica", "Arial", "sans-serif"]
             }
-        };
+        }
+    };
 
     void DrawerToggle() => _drawerOpen = !_drawerOpen;
 }

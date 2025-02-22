@@ -1,20 +1,16 @@
 ﻿using System.Management;
-using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Windows;
-
-using MudBlazor;
 
 namespace GS.DnsManager.Features.Core;
 
-internal interface IDnsService
+internal interface IDnsManager
 {
     void SetDnsToDhcp();
-    void SetDns(string[] dns);
+    void SetDns(DnsServer dns);
 }
 
-internal sealed class DnsService : IDnsService
+internal sealed class DnsManager : IDnsManager
 {
     private static NetworkInterface? GetActiveNetworkInterface()
     {
@@ -32,9 +28,9 @@ internal sealed class DnsService : IDnsService
     }
 
     public void SetDnsToDhcp() => SetDnsInternal(null);
-    public void SetDns(string[] dns) => SetDnsInternal(dns);
+    public void SetDns(DnsServer dns) => SetDnsInternal(dns);
 
-    private static void SetDnsInternal(string[]? dns)
+    private static void SetDnsInternal(DnsServer? server)
     {
         var networkInterface = GetActiveNetworkInterface();
         if (networkInterface == null)
@@ -57,7 +53,7 @@ internal sealed class DnsService : IDnsService
                 continue;
             }
 
-            methodParameters["DNSServerSearchOrder"] = dns;
+            methodParameters["DNSServerSearchOrder"] = server?.ServerIpList.ToArray();
             instance.InvokeMethod("SetDNSServerSearchOrder", methodParameters, null);
         }
     }

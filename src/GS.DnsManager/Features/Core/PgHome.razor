@@ -1,6 +1,7 @@
 @page "/"
 
-@inject IDnsService DnsService
+@inject IDnsManager DnsManager
+@inject IDnsServersRepository DnsServers
 @inject ISnackbar Snackbar
 
 <div class="d-flex flex-column gap-5">
@@ -8,11 +9,11 @@
         <MudSelect @bind-Value="_selectedConfig" Class="flex-auto">
             @foreach (var item in _dnsOptions)
             {
-                <MudSelectItem Value="item">@item.Name</MudSelectItem>
+                <MudSelectItem Value="item">@item.Title</MudSelectItem>
             }
         </MudSelect>
         <MudButton Variant="Variant.Filled" Color="Color.Primary"
-                   OnClick="BtnApplyDns_OnClick">
+        OnClick="BtnApplyDns_OnClick">
             Apply
         </MudButton>
     </MudCard>
@@ -20,22 +21,15 @@
 
 @code {
 
-    readonly DnsOption[] _dnsOptions =
-    [
-        new("(DHCP)", []),
+    IReadOnlyList<DnsServer> _dnsOptions = [];
+    DnsServer? _selectedConfig;
 
-        new("Shekan", ["178.22.122.100", "185.51.200.2"]),
-        new("403.online", ["10.202.10.202", "10.202.10.102"]),
-        new("radar.game", ["10.202.10.10", "10.202.10.11"]),
-
-        new("Google", ["8.8.8.8", "8.8.4.4"]),
-        new("1.1.1.1", ["1.1.1.1", "1.0.0.1"]),
-
-        new("1.1.1.1 + block malware for families", ["1.1.1.2", "1.0.0.2"]),
-        new("1.1.1.1 + block malware and adult content for families", ["1.1.1.3", "1.0.0.3"]),
-    ];
-
-    DnsOption? _selectedConfig;
+    /// <inheritdoc />
+    protected override async Task OnInitializedAsync()
+    {
+        _dnsOptions = await DnsServers.GetAll().ConfigureAwait(false);
+        _dnsOptions = _dnsOptions.Prepend(new DnsServer("(DHCP)", [])).ToList();
+    }
 
     void BtnApplyDns_OnClick()
     {
@@ -44,19 +38,16 @@
             return;
         }
 
-        if (_selectedConfig.DnsArr.Length == 0)
+        if (_selectedConfig.ServerIpList.Count == 0)
         {
-            DnsService.SetDnsToDhcp();
+            DnsManager.SetDnsToDhcp();
         }
         else
         {
-            DnsService.SetDns(_selectedConfig.DnsArr);
+            DnsManager.SetDns(_selectedConfig);
         }
 
         Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomStart;
-        Snackbar.Add("DNS updated: " + _selectedConfig.Name, Severity.Success);
+        Snackbar.Add("DNS updated: " + _selectedConfig.Title, Severity.Success);
     }
-
-    private sealed record DnsOption(string Name, string[] DnsArr);
-
 }

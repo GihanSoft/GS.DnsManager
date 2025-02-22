@@ -43,7 +43,8 @@ internal sealed partial class App : Application
 
     private static void ConfigureServices(IServiceCollection services)
     {
-        services.AddSingleton<IDnsService, DnsService>();
+        services.AddSingleton<IDnsManager, Features.Core.DnsManager>();
+        services.AddSingleton<IDnsServersRepository, JsonFileDnsServersRepository>();
         services.AddMudServices();
     }
 }

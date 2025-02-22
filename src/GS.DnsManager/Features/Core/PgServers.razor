@@ -1,0 +1,114 @@
+@page "/PgServers"
+
+@using System.Collections.ObjectModel
+@inherits OwningComponentBase
+
+@inject IDialogService DialogService
+@inject IDnsServersRepository DnsServers
+
+<h3>Servers</h3>
+
+<MudStack>
+    <MudButton StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary" OnClick="NewAsync">Add</MudButton>
+    <MudDataGrid @ref="_dataGrid" Items="_servers" SortMode="SortMode.None" Dense="true" ReadOnly="false"
+                 EditMode="DataGridEditMode.Form" EditTrigger="DataGridEditTrigger.OnRowClick"
+                 CommittedItemChanges="(EditableDnsServer _) => StateHasChangedAndIsDirty()">
+        <Columns>
+            <PropertyColumn Property="a => a.Title" />
+            <PropertyColumn Property="a => a.ServerIpList">
+                <CellTemplate>
+                    @System.Text.Json.JsonSerializer.Serialize(context.Item.ServerIpList)
+                </CellTemplate>
+                <EditTemplate>
+                    <ListInput @bind-List="@context.Item.ServerIpList"
+                               Lable="Server IP List" />
+                </EditTemplate>
+            </PropertyColumn>
+            <TemplateColumn>
+                <CellTemplate>
+                    <MudStack Row>
+                        <MudIconButton Icon="@Icons.Material.Filled.MoveUp" Size="Size.Small"
+                                       OnClick="() => Move(context.Item, -1)" />
+                        <MudIconButton Icon="@Icons.Material.Filled.MoveDown" Size="Size.Small"
+                                       OnClick="() => Move(context.Item, 1)" />
+                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small"
+                                       OnClick="async () => await Delete(context.Item)" />
+                    </MudStack>
+                </CellTemplate>
+            </TemplateColumn>
+        </Columns>
+    </MudDataGrid>
+</MudStack>
+
+@code {
+
+    bool _isDirty;
+    ObservableCollection<EditableDnsServer> _servers = [];
+    MudDataGrid<EditableDnsServer>? _dataGrid;
+
+    /// <inheritdoc />
+    protected override async Task OnInitializedAsync()
+    {
+        _servers = [.. await DnsServers.GetAll()];
+    }
+
+    void StateHasChangedAndIsDirty()
+    {
+        _isDirty = true;
+        StateHasChanged();
+    }
+
+    void Move(EditableDnsServer server, int movement)
+    {
+        var index = _servers.IndexOf(server);
+        var newIndex = index + movement;
+        if (newIndex < 0 || newIndex >= _servers.Count)
+        {
+            return;
+        }
+
+        _servers.RemoveAt(index);
+        _servers.Insert(newIndex, server);
+        StateHasChangedAndIsDirty();
+    }
+
+    async Task NewAsync()
+    {
+        EditableDnsServer newItem = new("", []);
+        _servers.Add(newItem);
+        StateHasChangedAndIsDirty();
+        await _dataGrid!.SetEditingItemAsync(newItem);
+    }
+
+    async Task Delete(EditableDnsServer server)
+    {
+        var isYes = await DialogService.ShowMessageBox("Warning", $"Do you want to delete {server.Title}", "Yes", "No");
+        if (isYes ?? false)
+        {
+            _servers.Remove(server);
+            StateHasChangedAndIsDirty();
+        }
+    }
+
+    /// <inheritdoc />
+    protected override void Dispose(bool disposing)
+    {
+        if (_isDirty)
+        {
+            DnsServers.SaveAsync([.. _servers]);
+        }
+    }
+
+    class EditableDnsServer(string Title, IList<string> ServerIpList)
+    {
+        public string Title { get; set; } = Title;
+        public IList<string> ServerIpList { get; set; } = ServerIpList;
+
+        public static implicit operator EditableDnsServer(DnsServer dnsServer)
+            => new EditableDnsServer(dnsServer.Title, [.. dnsServer.ServerIpList]);
+
+        public static implicit operator DnsServer(EditableDnsServer editable)
+            => new DnsServer(editable.Title, [.. editable.ServerIpList]);
+    }
+
+}
